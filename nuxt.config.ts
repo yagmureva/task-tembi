@@ -1,6 +1,7 @@
 export default defineNuxtConfig({
   css: [
-    "vuetify/lib/styles/main.sass", // Vuetify'in ana stilleri
+    "vuetify/lib/styles/main.sass",
+    "@mdi/font/css/materialdesignicons.min.css",
   ],
 
   // Build ayarları (Vuetify bileşenlerinin doğru şekilde derlenmesi için)
@@ -8,31 +9,10 @@ export default defineNuxtConfig({
     transpile: ["vuetify"],
   },
 
-  // Head kısmına CDN üzerinden Material Design Icons ekliyoruz
-  head: {
-    link: [
-      {
-        rel: "stylesheet",
-        href: "https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css", // CDN üzerinden MDI
-      },
-    ],
-  },
-
-  // Nuxt.js build modülleri
-  buildModules: [
-    "@nuxt/typescript-build", // TypeScript desteği
-    "@nuxtjs/vuetify", // Vuetify modülü
-  ],
-
   // Sunucu middleware ayarları (API proxy için)
   serverMiddleware: [
     { path: "/api", handler: "~/server/api/quotes.js" }, // ZenQuotes API rotası
   ],
-
-  // Axios ya da proxy ayarları, API isteklerini yönlendirmek için
-  axios: {
-    proxy: true,
-  },
 
   proxy: {
     "/api": {
@@ -42,9 +22,5 @@ export default defineNuxtConfig({
     },
   },
 
-  // Vuetify ayarları (isteğe bağlı olarak özelleştirilebilir)
-  vuetify: {
-    customVariables: ["~/assets/variables.scss"],
-    treeShake: true, // Sadece kullanılan bileşenlerin dahil edilmesi
-  },
+  compatibilityDate: "2024-09-19",
 });
