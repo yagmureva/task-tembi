@@ -1,47 +1,50 @@
 export default defineNuxtConfig({
-  // Include global CSS (for Vuetify and Material Design Icons)
   css: [
-    "vuetify/lib/styles/main.sass", // Vuetify's main styles
-    "@mdi/font/css/materialdesignicons.min.css", // Material Design Icons
+    "vuetify/lib/styles/main.sass", // Vuetify'in ana stilleri
   ],
 
-  // Ensure Vuetify components are transpiled
+  // Build ayarları (Vuetify bileşenlerinin doğru şekilde derlenmesi için)
   build: {
     transpile: ["vuetify"],
   },
 
-  // Vite-specific configurations
-  vite: {
-    // CSS options for Sass
-    css: {
-      preprocessorOptions: {
-        sass: {
-          api: "modern-compiler", // Use modern Sass compiler
-        },
+  // Head kısmına CDN üzerinden Material Design Icons ekliyoruz
+  head: {
+    link: [
+      {
+        rel: "stylesheet",
+        href: "https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css", // CDN üzerinden MDI
       },
-    },
+    ],
+  },
 
-    // Allow serving files from specific directories (for fonts, etc.)
-    server: {
-      fs: {
-        allow: [
-          "./", // The current project root
-          "../", // Allow accessing files in parent directories
-          "/Users/hyf/node_modules/@mdi/font", // Explicitly allow serving from the `@mdi/font` directory
-        ],
-      },
-      proxy: {
-        "/api": {
-          target: "https://zenquotes.io",
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ""),
-        },
-      },
-    },
+  // Nuxt.js build modülleri
+  buildModules: [
+    "@nuxt/typescript-build", // TypeScript desteği
+    "@nuxtjs/vuetify", // Vuetify modülü
+  ],
 
-    // Ensure Vite resolves symlinks correctly
-    resolve: {
-      preserveSymlinks: true,
+  // Sunucu middleware ayarları (API proxy için)
+  serverMiddleware: [
+    { path: "/api", handler: "~/server/api/quotes.js" }, // ZenQuotes API rotası
+  ],
+
+  // Axios ya da proxy ayarları, API isteklerini yönlendirmek için
+  axios: {
+    proxy: true,
+  },
+
+  proxy: {
+    "/api": {
+      target: "https://zenquotes.io", // ZenQuotes API hedefi
+      changeOrigin: true, // CORS sorunlarını önlemek için origin değiştirilir
+      pathRewrite: { "^/api": "" }, // API yolunu yeniden yazar ("/api" kaldırılır)
     },
+  },
+
+  // Vuetify ayarları (isteğe bağlı olarak özelleştirilebilir)
+  vuetify: {
+    customVariables: ["~/assets/variables.scss"],
+    treeShake: true, // Sadece kullanılan bileşenlerin dahil edilmesi
   },
 });
