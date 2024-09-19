@@ -1,18 +1,15 @@
 <template>
   <v-app id="inspire">
     <!-- App Bar -->
-    <v-app-bar flat color="primary" dark>
+    <v-app-bar flat color="#5AD795" dark>
       <v-container class="mx-auto d-flex align-center justify-space-between">
         <!-- Brand Name Button -->
-        <v-btn text class="text-h5 font-weight-bold" @click="goToHome">
+        <v-btn text class="text-h5 font-weight-bold" @click="navigateToTembi">
           {{ brandName }}
         </v-btn>
 
-        <!-- Toolbar Buttons -->
+        <!-- Spacer -->
         <v-spacer></v-spacer>
-
-        <!-- Quote List Button -->
-        <v-btn text @click="showQuotes"> Quote List </v-btn>
 
         <!-- Refresh Button -->
         <v-btn icon @click="refetch" aria-label="Refresh Quotes">
@@ -39,9 +36,17 @@
               <v-card
                 outlined
                 class="pa-5 text-center w-100"
-                style="max-width: none"
+                style="
+                  max-width: none;
+                  min-height: 200px;
+                  height: auto;
+                  overflow: visible;
+                "
               >
-                <v-card-title class="text-h4 font-weight-bold">
+                <v-card-title
+                  class="text-h4 font-weight-bold"
+                  style="white-space: normal; word-wrap: break-word"
+                >
                   <v-progress-circular
                     v-if="isFetching"
                     indeterminate
@@ -53,7 +58,10 @@
                     }}
                   </span>
                 </v-card-title>
-                <v-card-subtitle class="text-h6 font-italic text-right">
+                <v-card-subtitle
+                  class="text-h6 font-italic text-right"
+                  style="white-space: normal; word-wrap: break-word"
+                >
                   - {{ (data && data[0]?.a) || "Unknown" }}
                 </v-card-subtitle>
 
@@ -72,7 +80,12 @@
                 v-if="viewingFavorites"
                 outlined
                 class="pa-5 text-center w-100 mt-4"
-                style="max-width: none"
+                style="
+                  max-width: none;
+                  min-height: 200px;
+                  height: auto;
+                  overflow: visible;
+                "
               >
                 <v-card-title class="text-h4 font-weight-bold">
                   Favorite Quotes
@@ -81,10 +94,16 @@
                 <v-list v-if="favorites.length > 0">
                   <v-list-item v-for="(quote, index) in favorites" :key="index">
                     <v-list-item-content>
-                      <v-list-item-title>{{ quote.q }}</v-list-item-title>
-                      <v-list-item-subtitle
-                        >- {{ quote.a }}</v-list-item-subtitle
+                      <v-list-item-title
+                        style="white-space: normal; word-wrap: break-word"
                       >
+                        {{ quote.q }}
+                      </v-list-item-title>
+                      <v-list-item-subtitle
+                        style="white-space: normal; word-wrap: break-word"
+                      >
+                        - {{ quote.a }}
+                      </v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
                 </v-list>
@@ -120,7 +139,7 @@ const {
   refresh: refetch,
 } = await useFetch("/api/quotes");
 
-const brandName = "TEMBI";
+const brandName = "Tembi";
 const favorites = ref([]);
 const viewingFavorites = ref(false); // State to track whether the favorites section is shown
 
@@ -143,11 +162,6 @@ const toggleFavorites = () => {
 
 // Close the Favorites section
 const closeFavorites = () => {
-  viewingFavorites.value = false;
-};
-
-// Show Quotes and hide Favorites
-const showQuotes = () => {
   viewingFavorites.value = false;
 };
 
@@ -176,9 +190,9 @@ const clearFavorites = () => {
   }
 };
 
-// Navigate to home (if needed)
-const goToHome = () => {
-  viewingFavorites.value = false;
+// Navigate to Tembi website
+const navigateToTembi = () => {
+  window.location.href = "https://www.tembi.io/";
 };
 </script>
 
