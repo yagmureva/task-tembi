@@ -3,10 +3,8 @@
     <!-- App Bar with increased height -->
     <v-app-bar flat color="#5AD795" dark height="150px">
       <!-- Adjusting v-toolbar__content height -->
-      <div class="v-toolbar__content" style="height: 180px">
-        <v-container
-          class="mx-auto d-flex justify-center justify-space-between"
-        >
+      <div class="v-toolbar__content" style="height: 120px">
+        <v-container class="mx-auto d-flex justify-space-between align-center">
           <!-- Brand Name Button with SVG -->
           <v-btn
             text
@@ -14,20 +12,25 @@
             @click="navigateToTembi"
             style="font-size: 28px"
           >
-            <!-- Add the Tembi logo SVG inline -->
             <TembiLogo />
           </v-btn>
 
-          <!-- Spacer -->
+          <!-- Spacer to push buttons to the right -->
           <v-spacer></v-spacer>
 
-          <!-- New Button -->
-          <v-btn text small @click="refetch" aria-label="New Quote">
-            Get New Quote
-          </v-btn>
+          <!-- Aesthetic New Quote Button -->
+          <v-btn
+            small
+            @click="refetch"
+            aria-label="New Quote"
+            class="custom-btn button-spacing"
+            >Get New Quote</v-btn
+          >
 
-          <!-- Favorites Button -->
-          <v-btn text small @click="toggleFavorites"> Favorites </v-btn>
+          <!-- Aesthetic Favorites Button -->
+          <v-btn small @click="goToFavorites" class="custom-btn button-spacing"
+            >Favorites</v-btn
+          >
         </v-container>
       </div>
     </v-app-bar>
@@ -37,7 +40,6 @@
       <v-container>
         <v-row>
           <v-col cols="12" md="12">
-            <!-- Move the v-sheet further down using margin-top -->
             <v-sheet
               min-height="100vh"
               rounded="lg"
@@ -45,19 +47,13 @@
               class="d-flex flex-column justify-center align-center pa-3"
               style="margin-top: 50px"
             >
-              <!-- First Quote Card -->
               <v-card
                 outlined
                 class="pa-4 text-center w-100"
-                style="
-                  max-width: none;
-                  min-height: 500px;
-                  height: auto;
-                  overflow: visible;
-                "
+                style="max-width: none; min-height: 400px; height: auto"
               >
                 <v-card-title
-                  class="text-h5 font-weight-bold"
+                  class="text-h5 font-weight-bold quote-text"
                   style="white-space: normal; word-wrap: break-word"
                 >
                   <v-progress-circular
@@ -70,7 +66,7 @@
                   }}</span>
                 </v-card-title>
                 <v-card-subtitle
-                  class="text-h6 font-italic text-right"
+                  class="text-h6 font-italic author-text text-right"
                   style="white-space: normal; word-wrap: break-word"
                 >
                   - {{ (data && data[0]?.a) || "Unknown" }}
@@ -85,80 +81,32 @@
                   >
                 </v-card-actions>
               </v-card>
-
-              <!-- Favorites Section (conditionally shown) -->
-              <v-card
-                v-if="viewingFavorites"
-                outlined
-                class="pa-3 text-center w-100 mt-4"
-                style="
-                  max-width: none;
-                  min-height: 150px;
-                  height: auto;
-                  overflow: visible;
-                "
-              >
-                <v-card-title class="text-h5 font-weight-bold">
-                  Favorite Quotes
-                </v-card-title>
-
-                <v-list v-if="favorites.length > 0">
-                  <v-list-item
-                    v-for="(quote, index) in favorites"
-                    :key="index"
-                    class="d-flex align-center"
-                  >
-                    <v-list-item-content>
-                      <v-list-item-title
-                        style="white-space: normal; word-wrap: break-word"
-                      >
-                        {{ quote.q }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle
-                        style="white-space: normal; word-wrap: break-word"
-                      >
-                        - {{ quote.a }}
-                      </v-list-item-subtitle>
-                    </v-list-item-content>
-
-                    <!-- Even Smaller Delete Button -->
-                    <v-list-item-action>
-                      <v-btn
-                        icon
-                        class="small-delete-btn"
-                        @click="removeFavorite(index)"
-                      >
-                        <v-icon x-small>mdi-close</v-icon>
-                      </v-btn>
-                    </v-list-item-action>
-                  </v-list-item>
-                </v-list>
-                <v-card-subtitle v-else class="text-center"
-                  >No favorites saved yet.</v-card-subtitle
-                >
-
-                <!-- Close and Clear Buttons -->
-                <v-card-actions class="justify-center mt-4">
-                  <v-btn color="red" text small @click="clearFavorites"
-                    >Clear All</v-btn
-                  >
-                  <v-btn color="primary" text small @click="closeFavorites"
-                    >Close</v-btn
-                  >
-                </v-card-actions>
-              </v-card>
             </v-sheet>
           </v-col>
         </v-row>
       </v-container>
     </v-main>
+
+    <!-- Dialog for showing the pop-up -->
+    <v-dialog v-model="dialog" max-width="500">
+      <v-card>
+        <v-card-title class="headline">Success</v-card-title>
+        <v-card-text>
+          {{ dialogMessage }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="dialog = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
 <script setup>
 // Import the SVG file as a component
 import TembiLogo from "/statistic/images/tembi-logo.svg";
-
+import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 
 // Fetch quotes using Nuxt's useFetch composable
@@ -168,11 +116,10 @@ const {
   refresh: refetch,
 } = await useFetch("/api/quotes");
 
-const brandName = "Tembi";
 const favorites = ref([]);
-const viewingFavorites = ref(false); // State to track whether the favorites section is shown
+const dialog = ref(false);
+const dialogMessage = ref("");
 
-// Automatically refetch a new quote every 60 seconds
 onMounted(() => {
   const intervalId = setInterval(refetch, 60000);
 
@@ -184,130 +131,81 @@ onMounted(() => {
   return () => clearInterval(intervalId);
 });
 
-// Show or hide Favorites section
-const toggleFavorites = () => {
-  viewingFavorites.value = !viewingFavorites.value;
-};
-
-// Close the Favorites section
-const closeFavorites = () => {
-  viewingFavorites.value = false;
-};
-
-// Save current quote to localStorage
 const saveToFavorites = () => {
   const quote = { q: data.value[0]?.q, a: data.value[0]?.a };
 
   if (favorites.value.some((fav) => fav.q === quote.q && fav.a === quote.a)) {
-    alert("This quote is already in your favorites.");
+    dialogMessage.value = "This quote is already in your favorites.";
+    dialog.value = true; // Open dialog
     return;
   }
 
   favorites.value.push(quote);
   if (process.client) {
     localStorage.setItem("favorites", JSON.stringify(favorites.value));
-    alert("Quote saved to favorites!");
+    dialogMessage.value = "Quote saved to favorites!";
+    dialog.value = true; // Open dialog
   }
 };
 
-// Clear all favorites
-const clearFavorites = () => {
-  favorites.value = [];
-  if (process.client) {
-    localStorage.removeItem("favorites");
-    alert("All favorites cleared.");
-  }
-};
-
-// Remove specific favorite quote
-const removeFavorite = (index) => {
-  favorites.value.splice(index, 1);
-  if (process.client) {
-    localStorage.setItem("favorites", JSON.stringify(favorites.value));
-  }
-};
-
-// Navigate to Tembi website
 const navigateToTembi = () => {
   window.location.href = "https://www.tembi.io/";
+};
+
+const router = useRouter();
+const goToFavorites = () => {
+  router.push("/favorites");
 };
 </script>
 
 <style scoped>
-/* Include the Archivo Black font */
-/* Include the Archivo Black font for specific elements */
 @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
-
-/* Include the Rotunda font for the whole app */
 @import url("https://fonts.googleapis.com/css2?family=Rotunda:wght@400&display=swap");
 
-/* Apply Rotunda font to the entire application */
-* {
-  font-family: "Rotunda", sans-serif;
-  font-weight: 400 !important; /* Set font weight to 400 */
-  color: rgb(0, 0, 0); /* Set font color to black */
-  font-size: 16px; /* Set font size to 16px */
-  line-height: 24px; /* Set line height to 24px */
-}
-
-/* Specific font settings for Archivo Black */
 .archivo-font {
   font-family: "Archivo Black", sans-serif;
 }
 
-/* Ensure specific targeting for the font size */
 .v-btn.archivo-font {
   font-size: 28px !important;
   transform: translateY(-20px);
 }
 
-/* Additional styles for layout */
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.v-card {
-  background-color: #ffffff;
-}
-
-/* Move v-card-title and v-card-subtitle text further down */
 .v-card-title {
-  margin-top: 60px; /* Adds space above the title */
+  margin-top: 40px;
 }
 
 .v-card-subtitle {
-  margin-top: 20px; /* Adds space between the title and subtitle */
+  margin-top: 20px;
 }
 
-.v-list-item-title {
-  font-size: 14px;
+.quote-text {
+  font-size: 72px; /* Make the quote text double the size */
+  color: #282727;
 }
 
-.v-btn {
-  min-width: 100px;
-  font-size: 14px;
+.author-text {
+  font-size: 24px; /* Keeping the author text as is */
 }
 
-.v-app-bar {
-  font-size: 16px;
-  min-height: 100px; /* Increase the height of the app bar */
+/* Aesthetic Button Styles */
+.custom-btn {
+  background-color: #ecdac2 !important;
+  color: black !important;
+  border-radius: 50px; /* Rounded corners */
+  padding: 10px 20px; /* Padding for a nicer look */
+  font-weight: bold;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Add shadow */
+  transition: all 0.3s ease-in-out; /* Smooth hover transition */
 }
 
-.v-icon {
-  font-size: 18px;
+.custom-btn:hover {
+  background-color: #e3c7a8 !important; /* Slightly darker on hover */
+  transform: translateY(-2px); /* Lift on hover */
 }
 
-.my-4 {
-  margin: 16px 0; /* Adds space between the two cards */
-}
-
-/* Even smaller delete button */
-.small-delete-btn {
-  padding: 0;
-  min-width: 24px; /* Make the button smaller */
-}
-
-.v-btn .v-icon {
-  font-size: 12px; /* Make the delete icon smaller */
+/* Add margin to buttons */
+.button-spacing {
+  margin-right: 15px; /* Adjust this value for more or less space */
 }
 </style>
