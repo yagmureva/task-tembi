@@ -21,4 +21,6 @@ export default defineNuxtConfig({
       pathRewrite: { "^/api": "" }, // API yolunu yeniden yazar ("/api" kaldırılır)
     },
   },
+
+  compatibilityDate: "2024-09-20",
 });

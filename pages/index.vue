@@ -1,23 +1,28 @@
 <template>
   <v-app id="inspire">
     <!-- App Bar -->
-    <v-app-bar flat color="#5AD795" dark>
+    <v-app-bar flat color="#5AD795" dark height="100px">
       <v-container class="mx-auto d-flex align-center justify-space-between">
-        <!-- Brand Name Button -->
-        <v-btn text class="text-h5 font-weight-bold" @click="navigateToTembi">
+        <!-- Brand Name Button with Inline Font Size Style -->
+        <v-btn
+          text
+          class="text-h6 font-weight-bold archivo-font"
+          @click="navigateToTembi"
+          style="font-size: 28px"
+        >
           {{ brandName }}
         </v-btn>
 
         <!-- Spacer -->
         <v-spacer></v-spacer>
 
-        <!-- Refresh Button -->
-        <v-btn icon @click="refetch" aria-label="Refresh Quotes">
-          <v-icon>mdi-refresh</v-icon>
+        <!-- New Button -->
+        <v-btn text small @click="refetch" aria-label="New Quote">
+          Get New Quote
         </v-btn>
 
         <!-- Favorites Button -->
-        <v-btn text @click="toggleFavorites"> Favorites </v-btn>
+        <v-btn text small @click="toggleFavorites"> Favorites </v-btn>
       </v-container>
     </v-app-bar>
 
@@ -29,22 +34,22 @@
             <v-sheet
               min-height="100vh"
               rounded="lg"
-              elevation="2"
-              class="d-flex flex-column justify-center align-center pa-5"
+              elevation="0"
+              class="d-flex flex-column justify-center align-center pa-3"
             >
               <!-- First Quote Card -->
               <v-card
                 outlined
-                class="pa-5 text-center w-100"
+                class="pa-4 text-center w-100"
                 style="
                   max-width: none;
-                  min-height: 200px;
+                  min-height: 150px;
                   height: auto;
                   overflow: visible;
                 "
               >
                 <v-card-title
-                  class="text-h4 font-weight-bold"
+                  class="text-h5 font-weight-bold"
                   style="white-space: normal; word-wrap: break-word"
                 >
                   <v-progress-circular
@@ -52,11 +57,9 @@
                     indeterminate
                     color="primary"
                   ></v-progress-circular>
-                  <span v-else>
-                    {{
-                      (data && data[0]?.q) || "Fetching inspirational quote..."
-                    }}
-                  </span>
+                  <span v-else>{{
+                    (data && data[0]?.q) || "Fetching inspirational quote..."
+                  }}</span>
                 </v-card-title>
                 <v-card-subtitle
                   class="text-h6 font-italic text-right"
@@ -66,12 +69,12 @@
                 </v-card-subtitle>
 
                 <v-card-actions class="justify-center mt-4">
-                  <v-btn color="primary" @click="refetch" depressed>
-                    New Quote
-                  </v-btn>
-                  <v-btn color="secondary" @click="saveToFavorites" depressed>
-                    Save to Favorites
-                  </v-btn>
+                  <v-btn color="primary" text small @click="refetch"
+                    >New Quote</v-btn
+                  >
+                  <v-btn color="secondary" text small @click="saveToFavorites"
+                    >Save to Favorites</v-btn
+                  >
                 </v-card-actions>
               </v-card>
 
@@ -79,20 +82,24 @@
               <v-card
                 v-if="viewingFavorites"
                 outlined
-                class="pa-5 text-center w-100 mt-4"
+                class="pa-3 text-center w-100 mt-4"
                 style="
                   max-width: none;
-                  min-height: 200px;
+                  min-height: 150px;
                   height: auto;
                   overflow: visible;
                 "
               >
-                <v-card-title class="text-h4 font-weight-bold">
+                <v-card-title class="text-h5 font-weight-bold">
                   Favorite Quotes
                 </v-card-title>
 
                 <v-list v-if="favorites.length > 0">
-                  <v-list-item v-for="(quote, index) in favorites" :key="index">
+                  <v-list-item
+                    v-for="(quote, index) in favorites"
+                    :key="index"
+                    class="d-flex align-center"
+                  >
                     <v-list-item-content>
                       <v-list-item-title
                         style="white-space: normal; word-wrap: break-word"
@@ -105,20 +112,31 @@
                         - {{ quote.a }}
                       </v-list-item-subtitle>
                     </v-list-item-content>
+
+                    <!-- Even Smaller Delete Button -->
+                    <v-list-item-action>
+                      <v-btn
+                        icon
+                        class="small-delete-btn"
+                        @click="removeFavorite(index)"
+                      >
+                        <v-icon x-small>mdi-close</v-icon>
+                      </v-btn>
+                    </v-list-item-action>
                   </v-list-item>
                 </v-list>
-                <v-card-subtitle v-else class="text-center">
-                  No favorites saved yet.
-                </v-card-subtitle>
+                <v-card-subtitle v-else class="text-center"
+                  >No favorites saved yet.</v-card-subtitle
+                >
 
                 <!-- Close and Clear Buttons -->
                 <v-card-actions class="justify-center mt-4">
-                  <v-btn color="red" @click="clearFavorites" depressed>
-                    Clear Favorites
-                  </v-btn>
-                  <v-btn color="primary" @click="closeFavorites" depressed>
-                    Close
-                  </v-btn>
+                  <v-btn color="red" text small @click="clearFavorites"
+                    >Clear All</v-btn
+                  >
+                  <v-btn color="primary" text small @click="closeFavorites"
+                    >Close</v-btn
+                  >
                 </v-card-actions>
               </v-card>
             </v-sheet>
@@ -190,6 +208,14 @@ const clearFavorites = () => {
   }
 };
 
+// Remove specific favorite quote
+const removeFavorite = (index) => {
+  favorites.value.splice(index, 1);
+  if (process.client) {
+    localStorage.setItem("favorites", JSON.stringify(favorites.value));
+  }
+};
+
 // Navigate to Tembi website
 const navigateToTembi = () => {
   window.location.href = "https://www.tembi.io/";
@@ -197,6 +223,18 @@ const navigateToTembi = () => {
 </script>
 
 <style scoped>
+/* Include the Archivo Black font */
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
+
+.archivo-font {
+  font-family: "Archivo Black", sans-serif;
+}
+
+/* Ensure specific targeting for the font size */
+.v-btn.archivo-font {
+  font-size: 28px !important; /* Make sure the font size is applied */
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -206,14 +244,33 @@ const navigateToTembi = () => {
 }
 
 .v-list-item-title {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .v-btn {
-  min-width: 150px;
+  min-width: 100px;
+  font-size: 14px;
+}
+
+.v-app-bar {
+  font-size: 16px;
+}
+
+.v-icon {
+  font-size: 18px;
 }
 
 .my-4 {
   margin: 16px 0; /* Adds space between the two cards */
+}
+
+/* Even smaller delete button */
+.small-delete-btn {
+  padding: 0;
+  min-width: 24px; /* Make the button smaller */
+}
+
+.v-btn .v-icon {
+  font-size: 12px; /* Make the delete icon smaller */
 }
 </style>
