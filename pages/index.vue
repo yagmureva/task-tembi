@@ -1,29 +1,35 @@
 <template>
   <v-app id="inspire">
-    <!-- App Bar -->
-    <v-app-bar flat color="#5AD795" dark height="100px">
-      <v-container class="mx-auto d-flex align-center justify-space-between">
-        <!-- Brand Name Button with Inline Font Size Style -->
-        <v-btn
-          text
-          class="text-h6 font-weight-bold archivo-font"
-          @click="navigateToTembi"
-          style="font-size: 28px"
+    <!-- App Bar with increased height -->
+    <v-app-bar flat color="#5AD795" dark height="150px">
+      <!-- Adjusting v-toolbar__content height -->
+      <div class="v-toolbar__content" style="height: 180px">
+        <v-container
+          class="mx-auto d-flex justify-center justify-space-between"
         >
-          {{ brandName }}
-        </v-btn>
+          <!-- Brand Name Button with SVG -->
+          <v-btn
+            text
+            class="text-h6 font-weight-bold archivo-font"
+            @click="navigateToTembi"
+            style="font-size: 28px"
+          >
+            <!-- Add the Tembi logo SVG inline -->
+            <TembiLogo />
+          </v-btn>
 
-        <!-- Spacer -->
-        <v-spacer></v-spacer>
+          <!-- Spacer -->
+          <v-spacer></v-spacer>
 
-        <!-- New Button -->
-        <v-btn text small @click="refetch" aria-label="New Quote">
-          Get New Quote
-        </v-btn>
+          <!-- New Button -->
+          <v-btn text small @click="refetch" aria-label="New Quote">
+            Get New Quote
+          </v-btn>
 
-        <!-- Favorites Button -->
-        <v-btn text small @click="toggleFavorites"> Favorites </v-btn>
-      </v-container>
+          <!-- Favorites Button -->
+          <v-btn text small @click="toggleFavorites"> Favorites </v-btn>
+        </v-container>
+      </div>
     </v-app-bar>
 
     <!-- Main Content -->
@@ -31,11 +37,13 @@
       <v-container>
         <v-row>
           <v-col cols="12" md="12">
+            <!-- Move the v-sheet further down using margin-top -->
             <v-sheet
               min-height="100vh"
               rounded="lg"
               elevation="0"
               class="d-flex flex-column justify-center align-center pa-3"
+              style="margin-top: 50px"
             >
               <!-- First Quote Card -->
               <v-card
@@ -148,6 +156,9 @@
 </template>
 
 <script setup>
+// Import the SVG file as a component
+import TembiLogo from "/statistic/images/tembi-logo.svg";
+
 import { onMounted, ref } from "vue";
 
 // Fetch quotes using Nuxt's useFetch composable
@@ -224,8 +235,22 @@ const navigateToTembi = () => {
 
 <style scoped>
 /* Include the Archivo Black font */
+/* Include the Archivo Black font for specific elements */
 @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
 
+/* Include the Rotunda font for the whole app */
+@import url("https://fonts.googleapis.com/css2?family=Rotunda:wght@400&display=swap");
+
+/* Apply Rotunda font to the entire application */
+* {
+  font-family: "Rotunda", sans-serif;
+  font-weight: 400 !important; /* Set font weight to 400 */
+  color: rgb(0, 0, 0); /* Set font color to black */
+  font-size: 16px; /* Set font size to 16px */
+  line-height: 24px; /* Set line height to 24px */
+}
+
+/* Specific font settings for Archivo Black */
 .archivo-font {
   font-family: "Archivo Black", sans-serif;
 }
@@ -235,6 +260,7 @@ const navigateToTembi = () => {
   font-size: 28px !important; /* Make sure the font size is applied */
 }
 
+/* Additional styles for layout */
 .cursor-pointer {
   cursor: pointer;
 }
@@ -254,6 +280,7 @@ const navigateToTembi = () => {
 
 .v-app-bar {
   font-size: 16px;
+  min-height: 100px; /* Increase the height of the app bar */
 }
 
 .v-icon {
