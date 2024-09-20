@@ -1,75 +1,34 @@
-# Nuxt 3 Minimal Starter
+# Tembi Motivational Quote Webpage
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-## Setup
+https://github.com/user-attachments/assets/d3911091-5c3d-44a1-b4af-e096fe981086
 
-Make sure to install the dependencies:
 
-```bash
-# npm
-npm install
+## Project Overview
 
-# pnpm
-pnpm install
+This project is focused on creating a motivational quote webpage for Tembi. It will display motivational quotes designed to inspire the team and keep their energy levels high. The webpage is powered by Vue3 with the Composition API, using Nuxt.js as the framework, and Vuetify for UI components.
 
-# yarn
-yarn install
+## Features
 
-# bun
-bun install
-```
+- **Random Quote Display**: Automatically displays a new random quote every minute.
+- **Manual Quote Refresh**: Allows users to fetch a new quote instantly via a button.
+- **Save Favorite Quotes**: Users can save their favorite quotes to local storage to access them later.
+- **Responsive Design**: The webpage is designed to be fully responsive and in line with Tembi’s brand identity.
 
-## Development Server
+## Technologies Used
 
-Start the development server on `http://localhost:3000`:
+- **Nuxt.js (Vue 3 + Composition API)**: For building the frontend application.
+- **Vuetify**: For creating a modern, responsive UI.
+- **ZenQuotes API**: For fetching random motivational quotes.
+- **Local Storage**: For storing favorite quotes.
 
-```bash
-# npm
-npm run dev
+## API Information
 
-# pnpm
-pnpm run dev
+Quotes are fetched from the [ZenQuotes API](https://zenquotes.io/). Refer to their documentation for further details on how to interact with the API.
 
-# yarn
-yarn dev
+## Project Setup
 
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-repo/tembi-quotes-app.git
+   cd tembi-quotes-app
