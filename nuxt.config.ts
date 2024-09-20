@@ -1,3 +1,4 @@
+import svgLoader from "vite-svg-loader";
 export default defineNuxtConfig({
   css: [
     "vuetify/lib/styles/main.sass",
@@ -21,6 +22,8 @@ export default defineNuxtConfig({
       pathRewrite: { "^/api": "" }, // API yolunu yeniden yazar ("/api" kaldırılır)
     },
   },
-
+  vite: {
+    plugins: [svgLoader()],
+  },
   compatibilityDate: "2024-09-20",
 });
