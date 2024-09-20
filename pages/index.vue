@@ -51,7 +51,7 @@
                 class="pa-4 text-center w-100"
                 style="
                   max-width: none;
-                  min-height: 150px;
+                  min-height: 500px;
                   height: auto;
                   overflow: visible;
                 "
@@ -257,7 +257,8 @@ const navigateToTembi = () => {
 
 /* Ensure specific targeting for the font size */
 .v-btn.archivo-font {
-  font-size: 28px !important; /* Make sure the font size is applied */
+  font-size: 28px !important;
+  transform: translateY(-20px);
 }
 
 /* Additional styles for layout */
@@ -267,6 +268,15 @@ const navigateToTembi = () => {
 
 .v-card {
   background-color: #ffffff;
+}
+
+/* Move v-card-title and v-card-subtitle text further down */
+.v-card-title {
+  margin-top: 60px; /* Adds space above the title */
+}
+
+.v-card-subtitle {
+  margin-top: 20px; /* Adds space between the title and subtitle */
 }
 
 .v-list-item-title {
