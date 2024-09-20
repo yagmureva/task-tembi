@@ -17,8 +17,8 @@
 
           <v-spacer></v-spacer>
 
-          <!-- Back to Main Page -->
-          <v-btn class="custom-btn" small @click="goToMainPage">
+          <!-- Back to Main Page Button styled consistently with Get New Quote and Favorites buttons -->
+          <v-btn class="custom-btn button-spacing" small @click="goToMainPage">
             Back to Quotes
           </v-btn>
         </v-container>
@@ -36,6 +36,17 @@
               class="d-flex flex-column justify-center align-center pa-3"
               style="margin-top: 50px"
             >
+              <!-- Show message if no favorite quotes are available -->
+              <v-card
+                v-if="favorites.length === 0"
+                outlined
+                class="pa-4 text-center w-100 mb-4"
+              >
+                <v-card-title class="text-h5 font-weight-bold">
+                  No favorite quotes yet. Add some to get started!
+                </v-card-title>
+              </v-card>
+
               <!-- Display each favorite quote -->
               <v-card
                 v-for="(quote, index) in favorites"
@@ -138,14 +149,6 @@ const goToMainPage = () => {
 @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Rotunda:wght@400&display=swap");
 
-* {
-  font-family: "Rotunda", sans-serif;
-  font-weight: 400 !important;
-  color: rgb(0, 0, 0);
-  font-size: 16px;
-  line-height: 24px;
-}
-
 .archivo-font {
   font-family: "Archivo Black", sans-serif;
 }
@@ -177,5 +180,10 @@ const goToMainPage = () => {
 .custom-btn:hover {
   background-color: #e3c7a8 !important; /* Slightly darker on hover */
   transform: translateY(-2px); /* Lift on hover */
+}
+
+/* Add margin to buttons */
+.button-spacing {
+  margin-right: 15px; /* Adjust this value for more or less space */
 }
 </style>
