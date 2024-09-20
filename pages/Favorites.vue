@@ -18,7 +18,9 @@
           <v-spacer></v-spacer>
 
           <!-- Back to Main Page -->
-          <v-btn text small @click="goToMainPage"> Back to Quotes </v-btn>
+          <v-btn class="custom-btn" small @click="goToMainPage">
+            Back to Quotes
+          </v-btn>
         </v-container>
       </div>
     </v-app-bar>
@@ -57,7 +59,7 @@
 
                 <!-- Add delete button to remove individual quotes -->
                 <v-card-actions class="justify-center mt-4">
-                  <v-btn color="error" text small @click="removeFavorite(index)"
+                  <v-btn color="error" text small @click="confirmRemove(index)"
                     >Remove</v-btn
                   >
                 </v-card-actions>
@@ -66,6 +68,23 @@
           </v-col>
         </v-row>
       </v-container>
+
+      <!-- Dialog for confirming removal -->
+      <v-dialog v-model="dialog" max-width="500">
+        <v-card>
+          <v-card-title class="headline">Confirm Removal</v-card-title>
+          <v-card-text>
+            Are you sure you want to remove this quote from your favorites?
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="error" text @click="removeFavorite(confirmIndex)"
+              >Yes, Remove</v-btn
+            >
+            <v-btn color="primary" text @click="dialog = false">Cancel</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-main>
   </v-app>
 </template>
@@ -76,6 +95,8 @@ import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 
 const favorites = ref([]);
+const dialog = ref(false);
+const confirmIndex = ref(null);
 
 // Retrieve favorites from localStorage on component mount
 onMounted(() => {
@@ -84,16 +105,21 @@ onMounted(() => {
   }
 });
 
+// Open the dialog for removing a quote
+const confirmRemove = (index) => {
+  confirmIndex.value = index;
+  dialog.value = true; // Open the confirmation dialog
+};
+
 // Function to remove a quote from favorites
 const removeFavorite = (index) => {
   favorites.value.splice(index, 1); // Remove the selected quote from the array
+  dialog.value = false; // Close the dialog
 
   // Update localStorage with the new favorites list
   if (process.client) {
     localStorage.setItem("favorites", JSON.stringify(favorites.value));
   }
-
-  alert("Quote removed from favorites.");
 };
 
 // Navigate to the Tembi website
@@ -135,5 +161,21 @@ const goToMainPage = () => {
 
 .v-card-subtitle {
   margin-top: 20px;
+}
+
+/* Aesthetic Button Styles */
+.custom-btn {
+  background-color: #ecdac2 !important;
+  color: black !important;
+  border-radius: 50px; /* Rounded corners */
+  padding: 10px 20px; /* Padding for a nicer look */
+  font-weight: bold;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Add shadow */
+  transition: all 0.3s ease-in-out; /* Smooth hover transition */
+}
+
+.custom-btn:hover {
+  background-color: #e3c7a8 !important; /* Slightly darker on hover */
+  transform: translateY(-2px); /* Lift on hover */
 }
 </style>
